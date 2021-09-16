@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7133139463289208053}
+  - component: {fileID: 8749076526747649482}
   m_Layer: 5
   m_Name: InHandCard
   m_TagString: Untagged
@@ -36,6 +37,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8749076526747649482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3841538253865239711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52660ae5ab6fdbd41848288d7b1e578a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardArt: {fileID: 5015151617040369750}
+  attackText: {fileID: 5015151619067322075}
+  healthText: {fileID: 5015151617285121053}
+  manaText: {fileID: 5015151618897948062}
 --- !u!1 &5015151617040369737
 GameObject:
   m_ObjectHideFlags: 0
@@ -47,7 +64,6 @@ GameObject:
   - component: {fileID: 5015151617040369736}
   - component: {fileID: 5015151617040369749}
   - component: {fileID: 5015151617040369750}
-  - component: {fileID: 5015151617040369751}
   m_Layer: 5
   m_Name: CardArt
   m_TagString: Untagged
@@ -111,26 +127,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5015151617040369751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5015151617040369737}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2af91ae80271c16449b60fd78697c37d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  url: https://picsum.photos/200
-  CardArt: {fileID: 0}
-  rect:
-    serializedVersion: 2
-    x: 0
-    y: 12
-    width: 0
-    height: 0
 --- !u!1 &5015151617108999270
 GameObject:
   m_ObjectHideFlags: 0
