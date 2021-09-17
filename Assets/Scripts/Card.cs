@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,15 +6,13 @@ public class Card : MonoBehaviour
 {
     [SerializeField] private Image cardArt;
     [SerializeField] private Text attackText, healthText, manaText;
-    private int _attackValue, _healthValue, _manaValue;
-
+    [SerializeField] float countDuration = 1;
     private string url = "https://picsum.photos/200";
     private Sprite _image;
-
-    [SerializeField] float duration = 1;
+    private int _attackValue, _healthValue, _manaValue;
 
     public delegate void Handler();
-    public event Handler Death;
+    public event Handler NoHP;
 
     public int Attack
     {
@@ -55,8 +52,13 @@ public class Card : MonoBehaviour
     public void ChangeValue()
     {
         int randomParametr = Random.Range(0, 3);
-        int randomValue = Random.Range(-2, 0);
+        int randomValue = Random.Range(-2, 10);
         StartCoroutine(CountToTarget(randomParametr, randomValue));
+    }
+
+    public void MoveCard(Transform target, float time)
+    {
+        StartCoroutine(smoothLerpMove(target, time));
     }
 
     private IEnumerator LoadImageFromWebCoroutine()
@@ -80,9 +82,9 @@ public class Card : MonoBehaviour
                 start = Attack;
                 target = Attack + valueToAdd;
 
-                for (float timer = 0; timer < duration; timer += Time.deltaTime)
+                for (float timer = 0; timer < countDuration; timer += Time.deltaTime)
                 {
-                    float progress = timer / duration;
+                    float progress = timer / countDuration;
                     Attack = (int)Mathf.Lerp(start, target, progress);
                     yield return null;
                 }
@@ -91,29 +93,43 @@ public class Card : MonoBehaviour
                 start = Health;
                 target = Health + valueToAdd;
 
-                for (float timer = 0; timer < duration; timer += Time.deltaTime)
+                for (float timer = 0; timer < countDuration; timer += Time.deltaTime)
                 {
-                    float progress = timer / duration;
+                    float progress = timer / countDuration;
                     Health = (int)Mathf.Lerp(start, target, progress);
-
-                    if (Health <= 0)
-                    {
-                        Death?.Invoke();
-                    }
                     yield return null;
+
+                    if (Health < 1)
+                    {
+                        NoHP?.Invoke();
+                    }
                 }
                 break;
             case 2:
                 start = Mana;
                 target = Mana + valueToAdd;
 
-                for (float timer = 0; timer < duration; timer += Time.deltaTime)
+                for (float timer = 0; timer < countDuration; timer += Time.deltaTime)
                 {
-                    float progress = timer / duration;
+                    float progress = timer / countDuration;
                     Mana = (int)Mathf.Lerp(start, target, progress);
                     yield return null;
                 }
                 break;
+        }
+    }
+
+    private IEnumerator smoothLerpMove(Transform target, float time)
+    {
+        Vector3 startingPos = transform.position;
+        Vector3 finalPos = target.position;
+        float elapsedTime = 0;
+
+        while (elapsedTime < time)
+        {
+            transform.position = Vector3.Lerp(startingPos, finalPos, (elapsedTime / time));
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
     }
 }

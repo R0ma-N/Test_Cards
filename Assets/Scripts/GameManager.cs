@@ -1,31 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class LoadCard : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [SerializeField] GameObject card;
-    Transform[] places;
-    int[] parametrs;
-    List<Card> cards = new List<Card>();
-    
     [SerializeField] Canvas canvas;
-    [SerializeField] HorizontalLayoutGroup horizontalLayout;
-    public float spacing;
-    float timeElapsed;
-    [SerializeField] float lerpDuration = 3;
+    [SerializeField] float moveSpeed = 0.6f;
+    [SerializeField] Transform[] places;
 
+    List<Card> cards = new List<Card>();
     Transform parent;
+
     int activeCardNumber = 0;
-    int cardsCount;
 
     void Start()
     {
-        places = GetComponentsInChildren<Transform>();
-        cardsCount = Random.Range(4, 7);
+        int cardsCount = Random.Range(4, 7);
 
-        for (int i = 1; i < cardsCount + 1; i++)
+        for (int i = 0; i < cardsCount; i++)
         {
             GameObject tempObject = Instantiate(card);
             tempObject.transform.SetParent(places[i].transform, false);
@@ -38,13 +30,9 @@ public class LoadCard : MonoBehaviour
             cards[i].Health = Random.Range(1, 10);
             cards[i].Mana = Random.Range(1, 10);
 
-            cards[i].Death += onDeath;
+            cards[i].NoHP += remove;
+            cards[i].NoHP += moveCard;
         }
-    }
-
-    private void Update()
-    {
-
     }
 
     public void SelectCard(Card card)
@@ -60,11 +48,7 @@ public class LoadCard : MonoBehaviour
 
     public void NextCard()
     {
-        if (cards[activeCardNumber])
-        {
-            cards[activeCardNumber].ChangeValue();
-        }
-        print("ActiveCard " + activeCardNumber);
+        cards[activeCardNumber].ChangeValue();
 
         if (activeCardNumber == 0)
         {
@@ -77,9 +61,10 @@ public class LoadCard : MonoBehaviour
             {
                 DeselectCard(cards[activeCardNumber - 1]);
             }
+
             SelectCard(cards[activeCardNumber]);
 
-            if (activeCardNumber < cards.Count-1)
+            if (activeCardNumber < cards.Count - 1)
             {
                 activeCardNumber++;
             }
@@ -91,26 +76,32 @@ public class LoadCard : MonoBehaviour
         }
     }
 
-    void onDeath()
+    void remove()
     {
-        Destroy(cards[activeCardNumber - 1].gameObject);
-        cards.RemoveAt(activeCardNumber - 1);
-        cards.Remove(null);
-        print(cards.Count);
-        //for (int i = activeCardNumber - 1; i < cards.Count - 2; i++)
-        //{
-        //    cards.RemoveAt(i);
-        //    cards.Insert(i, cards[i + 1]);
-        //}
-
-        activeCardNumber = activeCardNumber - 1;
-
-        foreach (var item in cards)
+        if (activeCardNumber == 0)
         {
-            print(item);
+            Destroy(cards[cards.Count - 1].gameObject);
+            cards.RemoveAt(cards.Count - 1);
+            activeCardNumber = 0;
         }
-        print(cards);
+        else
+        {
+            Destroy(cards[activeCardNumber - 1].gameObject);
+            cards.RemoveAt(activeCardNumber - 1);
+            activeCardNumber = activeCardNumber - 1;
+        }
     }
-    
+
+    void moveCard()
+    {
+        if (activeCardNumber < cards.Count)
+        {
+            print("moveCard");
+            for (int i = activeCardNumber; i < cards.Count; i++)
+            {
+                print(i);
+                cards[i].MoveCard(places[i + 1], moveSpeed);
+            }
+        }
+    }
 }
- 
