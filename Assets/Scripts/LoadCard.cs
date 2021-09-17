@@ -7,8 +7,9 @@ public class LoadCard : MonoBehaviour
 {
     [SerializeField] GameObject card;
     Transform[] places;
+    int[] parametrs;
     List<Card> cards = new List<Card>();
-
+    
     [SerializeField] Canvas canvas;
     [SerializeField] HorizontalLayoutGroup horizontalLayout;
     public float spacing;
@@ -31,21 +32,19 @@ public class LoadCard : MonoBehaviour
             cards.Add(tempObject.GetComponent<Card>());
         }
 
-        //parent = cards[0].transform.parent;
-        //cards[0].transform.SetParent(canvas.transform);
+        for (int i = 0; i < cards.Count; i++)
+        {
+            cards[i].Attack = Random.Range(1, 10);
+            cards[i].Health = Random.Range(1, 10);
+            cards[i].Mana = Random.Range(1, 10);
+
+            cards[i].Death += onDeath;
+        }
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            cards[0].transform.SetParent(parent);
-        }
 
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            cards[0].transform.SetParent(canvas.transform);
-        }
     }
 
     public void SelectCard(Card card)
@@ -61,8 +60,11 @@ public class LoadCard : MonoBehaviour
 
     public void NextCard()
     {
-        print($"cardNumber {activeCardNumber}");
-        print($"cardsCount {cardsCount}");
+        if (cards[activeCardNumber])
+        {
+            cards[activeCardNumber].ChangeValue();
+        }
+        print("ActiveCard " + activeCardNumber);
 
         if (activeCardNumber == 0)
         {
@@ -71,20 +73,44 @@ public class LoadCard : MonoBehaviour
         }
         else if (activeCardNumber > 0)
         {
-            DeselectCard(cards[activeCardNumber - 1]);
+            if (cards[activeCardNumber - 1])
+            {
+                DeselectCard(cards[activeCardNumber - 1]);
+            }
             SelectCard(cards[activeCardNumber]);
 
-            if (activeCardNumber < cardsCount-1)
+            if (activeCardNumber < cards.Count-1)
             {
                 activeCardNumber++;
             }
             else
             {
-                DeselectCard(cards[cardsCount - 1]);
+                DeselectCard(cards[cards.Count - 1]);
                 activeCardNumber = 0;
             }
         }
-
-        cards[activeCardNumber].ChangeValue();
     }
+
+    void onDeath()
+    {
+        Destroy(cards[activeCardNumber - 1].gameObject);
+        cards.RemoveAt(activeCardNumber - 1);
+        cards.Remove(null);
+        print(cards.Count);
+        //for (int i = activeCardNumber - 1; i < cards.Count - 2; i++)
+        //{
+        //    cards.RemoveAt(i);
+        //    cards.Insert(i, cards[i + 1]);
+        //}
+
+        activeCardNumber = activeCardNumber - 1;
+
+        foreach (var item in cards)
+        {
+            print(item);
+        }
+        print(cards);
+    }
+    
 }
+ 

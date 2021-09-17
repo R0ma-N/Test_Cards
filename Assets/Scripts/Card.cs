@@ -9,16 +9,21 @@ public class Card : MonoBehaviour
     [SerializeField] private Text attackText, healthText, manaText;
     private int _attackValue, _healthValue, _manaValue;
 
-    private Sprite _image;
     private string url = "https://picsum.photos/200";
+    private Sprite _image;
 
-    public int AttackValue
+    [SerializeField] float duration = 1;
+
+    public delegate void Handler();
+    public event Handler Death;
+
+    public int Attack
     {
         get { return _attackValue; }
         set 
         { 
             _attackValue = value;
-            attackText.text = AttackValue.ToString();
+            attackText.text = Attack.ToString();
         }
     }
 
@@ -28,7 +33,7 @@ public class Card : MonoBehaviour
         set
         {
             _healthValue = value;
-            attackText.text = Health.ToString();
+            healthText.text = Health.ToString();
         }
     }
 
@@ -38,29 +43,23 @@ public class Card : MonoBehaviour
         set
         {
             _manaValue = value;
-            attackText.text = Mana.ToString();
+            manaText.text = Mana.ToString();
         }
     }
 
     void Start()
     {
-        StartCoroutine(LoadFromWebCoroutine());
-
-       // parametr = new Text[] { attackText, healthText, manaText };
-        AttackValue = Random.Range(1, 10);
-        _healthValue = Random.Range(1, 10);
-        _manaValue = Random.Range(1, 10);
-
-        healthText.text = _healthValue.ToString();
-        manaText.text = _manaValue.ToString();
+        StartCoroutine(LoadImageFromWebCoroutine());
     }
 
     public void ChangeValue()
     {
-        // parametr[Random.Range(1, 4)].text = Random.Range(-2, 10).ToString();
+        int randomParametr = Random.Range(0, 3);
+        int randomValue = Random.Range(-2, 0);
+        StartCoroutine(CountToTarget(randomParametr, randomValue));
     }
 
-    private IEnumerator LoadFromWebCoroutine()
+    private IEnumerator LoadImageFromWebCoroutine()
     {
         WWW wwwLoader = new WWW(url);
         yield return wwwLoader;
@@ -70,17 +69,52 @@ public class Card : MonoBehaviour
         cardArt.sprite = _image;
     }
 
-    private void Update()
+    private IEnumerator CountToTarget(int parametrNumber, int valueToAdd)
     {
-        if (Input.GetKey(KeyCode.Space))
+        int start;
+        int target;
+
+        switch (parametrNumber)
         {
-            ChangeValue();
+            case 0:
+                start = Attack;
+                target = Attack + valueToAdd;
+
+                for (float timer = 0; timer < duration; timer += Time.deltaTime)
+                {
+                    float progress = timer / duration;
+                    Attack = (int)Mathf.Lerp(start, target, progress);
+                    yield return null;
+                }
+                break;
+            case 1:
+                start = Health;
+                target = Health + valueToAdd;
+
+                for (float timer = 0; timer < duration; timer += Time.deltaTime)
+                {
+                    float progress = timer / duration;
+                    Health = (int)Mathf.Lerp(start, target, progress);
+
+                    if (Health <= 0)
+                    {
+                        Death?.Invoke();
+                    }
+                    yield return null;
+                }
+                break;
+            case 2:
+                start = Mana;
+                target = Mana + valueToAdd;
+
+                for (float timer = 0; timer < duration; timer += Time.deltaTime)
+                {
+                    float progress = timer / duration;
+                    Mana = (int)Mathf.Lerp(start, target, progress);
+                    yield return null;
+                }
+                break;
         }
-    }
-
-    private void Counter()
-    {
-
     }
 }
 
