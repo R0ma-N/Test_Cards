@@ -51,8 +51,8 @@ public class Card : MonoBehaviour
 
     public void ChangeValue()
     {
-        int randomParametr = 1; // Random.Range(0, 3);
-        int randomValue = Random.Range(-2, 0);
+        int randomParametr = Random.Range(0, 3);
+        int randomValue = Random.Range(-2, 10);
         StartCoroutine(CountToTarget(randomParametr, randomValue));
     }
 
