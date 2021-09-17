@@ -96,11 +96,9 @@ public class GameManager : MonoBehaviour
     {
         if (activeCardNumber < cards.Count)
         {
-            print("moveCard");
             for (int i = activeCardNumber; i < cards.Count; i++)
             {
-                print(i);
-                cards[i].MoveCard(places[i + 1], moveSpeed);
+                cards[i].MoveCard(places[i], moveSpeed);
             }
         }
     }

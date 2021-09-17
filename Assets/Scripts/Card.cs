@@ -51,8 +51,8 @@ public class Card : MonoBehaviour
 
     public void ChangeValue()
     {
-        int randomParametr = Random.Range(0, 3);
-        int randomValue = Random.Range(-2, 10);
+        int randomParametr = 1; // Random.Range(0, 3);
+        int randomValue = Random.Range(-2, 0);
         StartCoroutine(CountToTarget(randomParametr, randomValue));
     }
 
@@ -121,13 +121,13 @@ public class Card : MonoBehaviour
 
     private IEnumerator smoothLerpMove(Transform target, float time)
     {
-        Vector3 startingPos = transform.position;
-        Vector3 finalPos = target.position;
+        Vector2 startingPos = transform.position;
+        Vector2 finalPos = target.position;
         float elapsedTime = 0;
 
         while (elapsedTime < time)
         {
-            transform.position = Vector3.Lerp(startingPos, finalPos, (elapsedTime / time));
+            transform.position = Vector2.Lerp(startingPos, finalPos, (elapsedTime / time));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
